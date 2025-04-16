@@ -2,7 +2,8 @@
 
 using namespace std;
 
-unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixels){
+unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixels)
+{
     /*
  * @brief Carga la semilla y los resultados del enmascaramiento desde un archivo de texto.
  *
