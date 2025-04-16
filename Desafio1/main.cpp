@@ -43,7 +43,7 @@ int main()
     //QDir dir;
     //cout << "Directorio actual: " << dir.absolutePath().toStdString() << endl;
 
-    // Definición de rutas de archivo de entrada (imagen original) y salida (imagen modificada)
+    // Definición de rutas de archivo de entrada (imagen distorsionada) y salida (imagen modificada)
     QString archivoEntrada = "I_D.bmp";
     QString archivoSalida = "I_F.bmp";
 
