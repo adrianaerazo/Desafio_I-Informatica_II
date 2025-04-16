@@ -33,46 +33,104 @@
  * Asistencia de ChatGPT para mejorar la forma y presentación del código fuente
  */
 
-using namespace std;
-unsigned char* loadPixels(QString input, int &width, int &height);
-bool exportImage(unsigned char* pixelData, int width,int height, QString archivoSalida);
-unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixels);
-
 int main()
 {
     //Para conocer el directorio:
     //QDir dir;
     //cout << "Directorio actual: " << dir.absolutePath().toStdString() << endl;
 
-
-    // Definición de rutas de archivo de entrada (imagen original) y salida (imagen modificada)
-    QString archivoEntrada = "I_D.bmp"; //(Imagen distorsionada final)
-    QString archivoSalida = "I_PN.bmp";
-    QString archivoImMascara = "I_M.bmp";
-    QString archivoMascara = "M.bmp";
+    //Cantidad de transformaciones aplicada a Io
+    int8_t N = 7;
+    /*cout << "Ingrese la cantidad de transformaciones realizadas a la imagen original (Io): " << endl;
+    cin >> N ; */
 
     // Variables para almacenar las dimensiones de la imagen
     int height = 0;
     int width = 0;
 
-    // Cargar imagenes BMP en memoria dinámica y obtiene ancho y alto
+    // Definición de ruta de archivo de entrada (imagen distorsionada)
+    QString archivoEntrada = "I_D.bmp"; //(Imagen distorsionada final)
+
+    // Cargar imagen BMP en memoria dinámica y obtiene ancho y alto
     unsigned char *pixelData = loadPixels(archivoEntrada, width, height);
-    unsigned char *pixelImMascara = loadPixels(archivoImMascara, width, height);
+
+    typedef unsigned char* (*Function3Param)(unsigned char*, unsigned char*, int); //Cambiar a arreglo dinamico
+
+    for (int8_t i = 0; i < N; i++){
+
+        QString archivoImMascara = "I_M.bmp";
+        unsigned char *pixelImMascara = loadPixels(archivoImMascara, width, height);
+
+        int8_t different = 0;
+
+        //Arreglo de puntero a funciones
+        Function3Param functions[] = {funcionXOR, funcionOR, funcionAND};
+
+        for (size_t j = 0; j < sizeof(functions)/sizeof(functions[0]); j++){
+
+            unsigned char *transformation = functions[j](pixelData, pixelImMascara, width*height*3);
+
+            int dSizeTransf = width * height * 3;
+
+            delete[] pixelData;
+            delete[] pixelImMascara;
+
+            QString Mascara = "M.bmp";
+            unsigned char *pixelMascara = loadPixels(Mascara, width, height);
+            int dSizeM = width * height * 3;
+
+            int seed = 0, n_pixels = 0;
+            QString textFile = "M" + QString::number(N-i) + ".txt"; //Se lee el archivo M_(N-1).bmp;
+            unsigned int *maskingData = loadSeedMasking(textFile.toStdString().c_str(), seed, n_pixels);
+
+
+            //Revisar los siguientes ciclos for
+            for (int k = 0; k < dSizeTransf; k++){
+
+                for (int r = 0; r < dSizeM; r++){
+
+                    int16_t sumaT = int(transformation [r + seed]) + int (pixelMascara[r]);
+                    //cout << sumaT << endl;
+
+                }
+            }
+        }
+
+
+
+
+    }
+
+
+    QString archivoSalida = "I_PN.bmp";
+
+
+/*
+ // Cargar imagenes BMP en memoria dinámica y obtiene ancho y alto
+    unsigned char *pixelData = loadPixels(archivoEntrada, width, height);
+
     //unsigned char *pixelMascara = loadPixels(archivoMascara, width, height);
 
     unsigned char *trXOR =  funcionXOR(pixelData, pixelImMascara, (width*height*3));
+    //Verificar si las sumas son iguales
+
     unsigned char *trOR =  funcionOR(pixelData, pixelImMascara, (width*height*3));
+    //Verificar sumas
+
     unsigned char *trAND =  funcionAND(pixelData, pixelImMascara, (width*height*3));
+
 
     cout << "Contenido del arreglo de pixeles: " << endl;
     cout << "Imagen de " << width << " de ancho y " << height << " de alto." << endl;
+
+
     //cout << "Con una cantidad de  " << dataSize << " bytes."<< endl;
 
-    /*for (int i=0; i < 40; i++){
+    for (int i=0; i < 40; i++){
         cout << int(pixelData[i]) << endl; //permite ver pixeles en tipo entero
         // cout << (pixelData[i]) << endl; //permite ver pixeles en tipo char (ASCII)
         //cout << bitset<8> (pixelData[i]) << endl; //permite ver pixeles en tipo binario
-    }*/
+    }
 
 
     // Exporta la imagen modificada a un nuevo archivo BMP
@@ -93,18 +151,19 @@ int main()
     //unsigned int *maskingData = loadSeedMasking("M1.txt", seed, n_pixels);
 
     // Muestra en consola los primeros valores RGB leídos desde el archivo de enmascaramiento
-    /*for (int i = 0; i < n_pixels * 3; i += 3) {
+    for (int i = 0; i < n_pixels * 3; i += 3) {
         cout << "Pixel " << i / 3 << ": ("
              << maskingData[i] << ", "
              << maskingData[i + 1] << ", "
              << maskingData[i + 2] << ")" << endl;
-    }*/
+    }
 
     // Libera la memoria usada para los datos de enmascaramiento
-    /*if (maskingData != nullptr){
+    if (maskingData != nullptr){
         delete[] maskingData;
         maskingData = nullptr;
-    }*/
+    }
+*/
 
     return 0; // Fin del programa
 }

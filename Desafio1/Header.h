@@ -5,6 +5,8 @@
 #include <bitset>
 #include <QDir>
 
+using namespace std;
+
 #ifndef HEADER_H
 #define HEADER_H
 unsigned char* loadPixels(QString input, int &width, int &height);

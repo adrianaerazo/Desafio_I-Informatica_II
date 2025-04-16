@@ -6,7 +6,7 @@ unsigned char* funcionAND(unsigned char* pixelData, unsigned char* pixelImMascar
 {
     unsigned char *trAND = new unsigned char[dataSize];
 
-    //cout << "Resultados AND: "<<endl;
+    cout << "Resultados AND: "<<endl;
     for (int i = 0; i < 5; ++i)
     {
         //cout << bitset<8> (pixelData[i]) << "     " << bitset<8> (pixelImMascara[i]) <<endl;
