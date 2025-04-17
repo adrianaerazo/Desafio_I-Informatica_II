@@ -15,5 +15,6 @@ unsigned char *funcionXOR(unsigned char* pixelData, unsigned char* pixelImMascar
 unsigned char* funcionOR(unsigned char* pixelData, unsigned char* pixelImMascara, int dataSize);
 unsigned char* funcionAND(unsigned char* pixelData, unsigned char* pixelImMascara, int dataSize);
 unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixels);
+unsigned int verificacionTransformacion(unsigned int* RGB , unsigned char* mascara, unsigned char* transformation, int &seed, int &n_pixels);
 
 #endif // HEADER_H

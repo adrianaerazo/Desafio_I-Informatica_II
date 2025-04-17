@@ -83,8 +83,10 @@ int main()
             QString textFile = "M" + QString::number(N-i) + ".txt"; //Se lee el archivo M_(N-1).bmp;
             unsigned int *maskingData = loadSeedMasking(textFile.toStdString().c_str(), seed, n_pixels);
 
+            //Verificar transformacion aplicada
+            unsigned int resultadoTransformation = verificacionTransformacion(maskingData, pixelMascara, transformation, seed, n_pixels);
 
-            //Revisar los siguientes ciclos for
+            /*//Revisar los siguientes ciclos for
             for (int k = 0; k < dSizeTransf; k++){
 
                 for (int r = 0; r < dSizeM; r++){
@@ -94,11 +96,8 @@ int main()
 
                 }
             }
+            */
         }
-
-
-
-
     }
 
 

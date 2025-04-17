@@ -6,7 +6,8 @@ SOURCES += main.cpp \
     funcionOR.cpp \
     funcionXOR.cpp \
     loadPixels.cpp \
-    loadSeedMasking.cpp
+    loadSeedMasking.cpp \
+    verificacionTransformacion.cpp
 
 DISTFILES += \
     ../../Informacion_Desafio/Caso 2/M0.txt \

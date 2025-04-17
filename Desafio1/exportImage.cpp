@@ -27,7 +27,8 @@ bool exportImage(unsigned char* pixelData, int width,int height, QString archivo
     QImage outputImage(width, height, QImage::Format_RGB888);
 
     // Copiar los datos de píxeles desde el buffer al objeto QImage
-    for (int y = 0; y < height; ++y) {
+    for (int y = 0; y < height; ++y)
+    {
         // outputImage.scanLine(y) devuelve un puntero a la línea y-ésima de píxeles en la imagen
         // pixelData + y * width * 3 apunta al inicio de la línea y-ésima en el buffer (sin padding)
         // width * 3 son los bytes a copiar (3 por píxel)
@@ -35,11 +36,14 @@ bool exportImage(unsigned char* pixelData, int width,int height, QString archivo
     }
 
     // Guardar la imagen en disco como archivo BMP
-    if (!outputImage.save(archivoSalida, "BMP")) {
+    if (!outputImage.save(archivoSalida, "BMP"))
+    {
         // Si hubo un error al guardar, mostrar mensaje de error
         cout << "Error: No se pudo guardar la imagen BMP modificada.";
         return false; // Indica que la operación falló
-    } else {
+    }
+    else
+    {
         // Si la imagen fue guardada correctamente, mostrar mensaje de éxito
         cout << "Imagen BMP modificada guardada como " << archivoSalida.toStdString() << endl;
         return true; // Indica éxito
