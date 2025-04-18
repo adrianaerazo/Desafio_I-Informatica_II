@@ -25,7 +25,8 @@ unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixel
 
     // Abrir el archivo que contiene la semilla y los valores RGB
     ifstream archivo(nombreArchivo);
-    if (!archivo.is_open()) {
+    if (!archivo.is_open())
+    {
         // Verificar si el archivo pudo abrirse correctamente
         cout << "No se pudo abrir el archivo." << endl;
         return nullptr;
@@ -36,9 +37,12 @@ unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixel
 
     int r, g, b;
 
+    // Inicializar en cero para evitar traer basura y asegurarse de que comienza en 0
+    n_pixels = 0;
     // Contar cuántos grupos de valores RGB hay en el archivo
     // Se asume que cada línea después de la semilla tiene tres valores (r, g, b)
-    while (archivo >> r >> g >> b) {
+    while (archivo >> r >> g >> b)
+    {
         n_pixels++;  // Contamos la cantidad de píxeles
     }
 

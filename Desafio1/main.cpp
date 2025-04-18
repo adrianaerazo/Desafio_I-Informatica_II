@@ -33,6 +33,8 @@
  * Asistencia de ChatGPT para mejorar la forma y presentación del código fuente
  */
 
+//se define antes de intentar usar porque porque en C++ el compilador necesita conocer todos los tipos antes de compilar las funciones
+typedef unsigned char* (*Function3Param)(unsigned char*, unsigned char*, int); //Cambiar a arreglo dinamico
 int main()
 {
     //Para conocer el directorio:
@@ -54,8 +56,6 @@ int main()
     // Cargar imagen BMP en memoria dinámica y obtiene ancho y alto
     unsigned char *pixelData = loadPixels(archivoEntrada, width, height);
 
-    typedef unsigned char* (*Function3Param)(unsigned char*, unsigned char*, int); //Cambiar a arreglo dinamico
-
     for (int8_t i = 0; i < N; i++){
 
         QString archivoImMascara = "I_M.bmp";
@@ -66,7 +66,8 @@ int main()
         //Arreglo de puntero a funciones
         Function3Param functions[] = {funcionXOR, funcionOR, funcionAND};
 
-        for (size_t j = 0; j < sizeof(functions)/sizeof(functions[0]); j++){
+        for (size_t j = 0; j < sizeof(functions)/sizeof(functions[0]); j++)
+        {
 
             unsigned char *transformation = functions[j](pixelData, pixelImMascara, width*height*3);
 

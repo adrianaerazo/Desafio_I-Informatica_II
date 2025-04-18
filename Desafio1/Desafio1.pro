@@ -2,6 +2,7 @@ QT += core gui
 CONFIG += console c++17
 SOURCES += main.cpp \
     exportImage.cpp \
+    frotacionR.cpp \
     funcionAND.cpp \
     funcionOR.cpp \
     funcionXOR.cpp \
