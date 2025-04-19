@@ -2,13 +2,14 @@ QT += core gui
 CONFIG += console c++17
 SOURCES += main.cpp \
     exportImage.cpp \
-    frotacionR.cpp \
     funcionAND.cpp \
     funcionOR.cpp \
+    funcionRL.cpp \
+    funcionRR.cpp \
     funcionXOR.cpp \
     loadPixels.cpp \
     loadSeedMasking.cpp \
-    verificacionTransformacion.cpp
+    verificationTransformation.cpp
 
 DISTFILES += \
     ../../Informacion_Desafio/Caso 2/M0.txt \
