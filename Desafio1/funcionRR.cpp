@@ -2,15 +2,15 @@
 
 using namespace std;
 
-unsigned char * funcionRR (unsigned char *pixelData, int dataSize, int n)
+unsigned char * funcionRR (unsigned char *pixelData, unsigned char* pixelImMascara, int dataSize, int n)
 {
     unsigned char *trRotacionR = new unsigned char [dataSize];
 
-    cout << "Resultados funcion de Rotacion Derecha: "<<endl;
+    cout << "Operacion RR" << endl;
+
     for (int i = 0; i < dataSize; ++i)
     {
         trRotacionR[i]= (pixelData[i] >> n) | (pixelData[i] << (8-n));
     }
-    cout << "Rotaciones Derecha: " << n <<endl;
     return trRotacionR;
 }

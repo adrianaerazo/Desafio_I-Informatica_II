@@ -21,7 +21,6 @@ unsigned char* loadPixels(QString input, int &width, int &height)
  * @note Es responsabilidad del usuario liberar la memoria asignada al arreglo devuelto usando `delete[]`.
  */
 
-    cout << "Cargando imagen desde: " << input.toStdString() << endl;
 
     // Cargar la imagen BMP desde el archivo especificado (usando Qt)
     QImage imagen(input);
@@ -32,8 +31,6 @@ unsigned char* loadPixels(QString input, int &width, int &height)
         cout << "Error: No se pudo cargar la imagen BMP." << std::endl;
         return nullptr; // Retorna un puntero nulo si la carga falló
     }
-
-    cout << "Imagen cargada exitosamente: " << input.toStdString() << endl;
 
     // Convierte la imagen al formato RGB888 (3 canales de 8 bits sin transparencia)
     imagen = imagen.convertToFormat(QImage::Format_RGB888);

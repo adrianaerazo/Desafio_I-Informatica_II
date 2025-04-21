@@ -11,7 +11,7 @@ bool verificationTransformation(unsigned int* dataRGB , unsigned char* mascara, 
         resultado = int(mascara[k]+transformation[seed + k]);
         if(resultado != dataRGB[k])
         {
-            cout << "La transformacion usada es invalida " << endl;
+            cout << "Transformacion invalida " << endl;
             return false;
         }
     }

@@ -34,68 +34,89 @@
  */
 
 //se define antes de usar porque en C++ el compilador necesita conocer todos los tipos antes de compilar las funciones
-typedef unsigned char* (*Function3Param)(unsigned char*, unsigned char*, int); //Cambiar a arreglo dinamico
+typedef unsigned char* (*Function)(unsigned char*, unsigned char*, int, int); //Cambiar a arreglo dinamico
 
 int main(){
     //Cantidad de transformaciones aplicada a Io
     int8_t N = 6;
-    /*cout << "Ingrese la cantidad de transformaciones realizadas a la imagen original (Io): " << endl;
+    /* cout << "Ingrese la cantidad de transformaciones realizadas a la imagen original (Io): " << endl;
     cin >> N ; */
 
     //Arreglo de strings para poder imprimir un mensaje final de solucion
-    string trAplicadas[N +1];
+    // string trAplicadas[N + 1];
 
     // Variables para almacenar las dimensiones de la imagen
-    int height = 0;
-    int width = 0;
-    int originalHeight = 0;
-    int originalWidth = 0;
+    int height = 0, width = 0, originalHeight = 0, originalWidth = 0;
 
     // Definición de ruta de archivo de entrada (imagen distorsionada)
-    QString archivoEntrada = "I_D.bmp"; //(Imagen distorsionada final)
+    QString archivoEntrada = "I_D.bmp";
 
     // Cargar imagen BMP en memoria dinámica y obtiene ancho y alto
     unsigned char *pixelData = loadPixels(archivoEntrada, originalWidth, originalHeight);
 
     //Tamaño del arreglo de datos RGB de la I_D.bmp
-    const int dataSize = originalWidth * originalHeight * 3;
+    //const int dataSize = originalWidth * originalHeight * 3;
 
+    //Arreglo de puntero a funciones
+    Function functions[] = {funcionXOR, funcionOR, funcionAND, funcionRL, funcionRR};
 
     //Posible solucion mas eficiente
-    /*
-    for (int8_t i = 0; i < N; i++){
+    for (int8_t i = 0; i <= N; i++){
+
+        bool found = false;
 
         QString archivoImMascara = "I_M.bmp";
         unsigned char *pixelImMascara = loadPixels(archivoImMascara, originalWidth, originalHeight);
 
-        //Arreglo de puntero a funciones
-        Function3Param functions[] = {funcionXOR, funcionOR, funcionAND};
+        QString Mascara = "M.bmp";
+        unsigned char *pixelMascara = loadPixels(Mascara, width, height);
 
-        for (size_t j = 0; j < sizeof(functions)/sizeof(functions[0]); j++){
+        QString textFile = "M" + QString::number(N-i) + ".txt"; //Se lee el archivo M_(N-1).bmp;
+        int seed = 0, n_pixels = 0;
+        unsigned int *maskingData = loadSeedMasking(textFile.toStdString().c_str(), seed, n_pixels);
 
-            unsigned char *transformation = functions[j](pixelData, pixelImMascara, originalWidth*originalHeight*3);
+        //Probar XOR, OR, AND
+        for (int j = 0; j < 3 && !found; j++){
 
-            QString Mascara = "M.bmp";
-            unsigned char *pixelMascara = loadPixels(Mascara, width, height);
+            unsigned char *transformation = functions[j](pixelData, pixelImMascara, originalWidth*originalHeight*3, 0);
 
-            int seed = 0, n_pixels = 0;
-            QString textFile = "M" + QString::number(N-i) + ".txt"; //Se lee el archivo M_(N-1).bmp;
-            unsigned int *maskingData = loadSeedMasking(textFile.toStdString().c_str(), seed, n_pixels);
-
-            //Verificar transformacion aplicada
-            bool result = verificationTransformation(maskingData, pixelMascara, transformation, seed, n_pixels);
-            delete[] pixelMascara;
-            delete[] maskingData;
-
-            if (result){
-                delete[] pixelData;
+            if (verificationTransformation(maskingData, pixelMascara, transformation, seed, n_pixels)){
+                delete [] pixelData;
                 pixelData = transformation;
+                found = true;
+                cout << "Transformacion valida " << endl;
+            }
+            else delete[] transformation;
+        }
+
+        //Probar RL y RR
+        for (int n = 1; n <= 8; n++){
+
+            for (int j = 3; j <= 4 && !found; j++)
+            {
+                unsigned char *transformation = functions[j](pixelData, nullptr, originalWidth*originalHeight*3, n);
+
+                if (verificationTransformation(maskingData, pixelMascara, transformation, seed, n_pixels)){
+                    delete [] pixelData;
+                    pixelData = transformation;
+                    found = true;
+                    cout << "Transformacion valida " << endl;
+                }
+                else delete[] transformation;
             }
         }
+        delete[] pixelImMascara;
+        delete[] pixelMascara;
+        delete[] maskingData;
     }
-    */
+
+    QString archivoSalida = "I_O.bmp";
+    exportImage(pixelData, originalWidth, originalHeight, archivoSalida);
+    delete[] pixelData;
+}
 
 
+/*
     //Implementacion de posible solucion lineal
     for (int8_t i = 0; i <= N; i++)
     {
@@ -206,9 +227,6 @@ int main(){
         }
     }
 
-    QString archivoSalida = "IO.bmp";
-    exportImage(pixelData, originalWidth, originalHeight, archivoSalida);
-    delete[] pixelData;
 
     // Al final mostramos todas las transformaciones aplicadas
     cout << "\nRESUMEN DE LAS TRANSFORMACIONES REALIZADAS:\n";
@@ -220,7 +238,7 @@ int main(){
     return 0; // Fin del programa
 }
 
-
+*/
 
 
 
