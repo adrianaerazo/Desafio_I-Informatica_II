@@ -39,9 +39,16 @@ typedef unsigned char* (*Function)(unsigned char*, unsigned char*, size_t, uint8
 
 int main(){
     //Cantidad de transformaciones aplicada a Io
-    uint8_t N = 6;
-    /* cout << "Ingrese la cantidad de transformaciones realizadas a la imagen original (Io): " << endl;
-    cin >> N ; */
+    int N =0, c = 0;
+    cout << "Ingrese la cantidad de transformaciones realizadas a la imagen original (Io): " << endl;
+    cin >> c ;
+    //Verificar que el valor de n transformaciones sea mayor que cero
+    if (c == 0){
+        cout << "Error: La cantidad de transformaciones debe ser mayor que 0." << endl;
+        return -1;
+    }
+    N = c - 1;
+
 
     // Variables para almacenar las dimensiones de la imagen
     int height = 0, width = 0, originalHeight = 0, originalWidth = 0;
@@ -58,8 +65,15 @@ int main(){
     //Arreglo de puntero a funciones
     Function functions[] = {funcionXOR, funcionOR, funcionAND, funcionRL, funcionRR};
 
+    //Imprimir en pantalla las transformaciones realizadas
+    string* trAplicadas = new string[c];
+
+
+    //Arreglo de nombres de funciones para imprimir en pantalla las transformaciones realizadas
+    string nameTransformations[5] = {"XOR" , "OR" , "AND" , "RL" , "RR"};
+
     //Posible solucion mas eficiente
-    for (uint8_t i = 0; i <= N; i++){
+    for (int i = 0; i <= N; i++) {
 
         bool found = false;
 
@@ -69,38 +83,55 @@ int main(){
         QString Mascara = "M.bmp";
         unsigned char *pixelMascara = loadPixels(Mascara, width, height);
 
-        QString textFile = "M" + QString::number(N-i) + ".txt"; //Se lee el archivo M_(N-1).bmp;
+        QString textFile = "M" + QString::number(N - i) + ".txt";
         int seed = 0, n_pixels = 0;
         unsigned int *maskingData = loadSeedMasking(textFile.toStdString().c_str(), seed, n_pixels);
 
-        //Probar XOR, OR, AND
-        for (uint8_t j = 0; j < 3 && !found; j++){
+        // Probar XOR, OR, AND
+        for (uint8_t j = 0; j < 3 && !found; j++) {
 
             unsigned char *transformation = functions[j](pixelData, pixelImMascara, dataSize, 0);
 
-            if (verificationTransformation(maskingData, pixelMascara, transformation, seed, n_pixels)){
-                delete [] pixelData;
+            if (verificationTransformation(maskingData, pixelMascara, transformation, seed, n_pixels)) {
+                string mensaje = "Paso " + to_string(i + 1) + ": " + nameTransformations[j] + " es la transformacion correcta.";
+                trAplicadas[i] = mensaje;
+                delete[] pixelData;
                 pixelData = transformation;
                 found = true;
-            }
-            else delete[] transformation;
-        }
-
-        //Probar RL y RR
-        for (uint8_t j = 3; j <= 4 && !found; j++) {
-
-            for (uint8_t n = 1; n <= 8; n++){
-
-                unsigned char *transformation = functions[j](pixelData, nullptr, dataSize, n);
-
-                if (verificationTransformation(maskingData, pixelMascara, transformation, seed, n_pixels)){
-                    delete [] pixelData;
-                    pixelData = transformation;
-                    found = true;
-                }
-                else delete[] transformation;
+            } else {
+                delete[] transformation;
             }
         }
+
+        // Probar RL y RR solo si las anteriores fallaron
+        for (uint8_t bits = 1; bits <= 8 && !found; bits++) {
+
+            unsigned char *transformationRL = functions[3](pixelData, nullptr, dataSize, bits);
+
+            if (verificationTransformation(maskingData, pixelMascara, transformationRL, seed, n_pixels)) {
+                string mensaje = "Paso " + to_string(i + 1) + ": " + nameTransformations[3] + " es la transformacion correcta con " + to_string(bits) + " bits.";
+                trAplicadas[i] = mensaje;
+                delete[] pixelData;
+                pixelData = transformationRL;
+                found = true;
+            } else {
+                delete[] transformationRL;
+            }
+
+            unsigned char *transformationRR = functions[4](pixelData, nullptr, dataSize, bits);
+
+            if (verificationTransformation(maskingData, pixelMascara, transformationRR, seed, n_pixels)) {
+                string mensaje = "Paso " + to_string(i + 1) + ": " + nameTransformations[4] + " es la transformacion correcta con " + to_string(bits) + " bits.";
+                trAplicadas[i] = mensaje;
+                delete[] pixelData;
+                pixelData = transformationRR;
+                found = true;
+            } else {
+                delete[] transformationRR;
+            }
+        }
+
+        // Liberar memoria cargada para cada paso i
         delete[] pixelImMascara;
         delete[] pixelMascara;
         delete[] maskingData;
@@ -110,6 +141,15 @@ int main(){
     QString archivoSalida = "I_O.bmp";
     exportImage(pixelData, originalWidth, originalHeight, archivoSalida);
     delete[] pixelData;
+
+    // Al final mostramos todas las transformaciones aplicadas
+    cout << "\nRESUMEN DE LAS TRANSFORMACIONES REALIZADAS:\n";
+    for (int i = 0; i <= N; i++){
+        cout << trAplicadas[i] << endl;
+    }
+    delete[] trAplicadas;
+
+    return 0;
 }
 
 

@@ -30,7 +30,7 @@ unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixel
     if (!archivo.is_open())
     {
         // Verificar si el archivo pudo abrirse correctamente
-        cout << "No se pudo abrir el archivo." << endl;
+        //cout << "No se pudo abrir el archivo." << endl;
         return nullptr;
     }
 
