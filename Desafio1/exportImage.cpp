@@ -1,9 +1,11 @@
+#include <iostream>
+#include <QImage>
 #include <Header.h>
 
 using namespace std;
 
-bool exportImage(unsigned char* pixelData, int width,int height, QString archivoSalida){
-    /*
+bool exportImage(unsigned char* pixelData, int width,int height, QString archivoSalida)
+{/*
  * @brief Exporta una imagen en formato BMP a partir de un arreglo de píxeles en formato RGB.
  *
  * Esta función crea una imagen de tipo QImage utilizando los datos contenidos en el arreglo dinámico

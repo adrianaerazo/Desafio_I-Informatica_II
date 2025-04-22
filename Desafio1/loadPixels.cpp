@@ -1,10 +1,11 @@
+#include <iostream>
+#include <QImage>
 #include <Header.h>
 
 using namespace std;
 
 unsigned char* loadPixels(QString input, int &width, int &height)
-{
-    /*
+{/*
  * @brief Carga una imagen BMP desde un archivo y extrae los datos de píxeles en formato RGB.
  *
  * Esta función utiliza la clase QImage de Qt para abrir una imagen en formato BMP, convertirla al
@@ -20,7 +21,6 @@ unsigned char* loadPixels(QString input, int &width, int &height)
  *
  * @note Es responsabilidad del usuario liberar la memoria asignada al arreglo devuelto usando `delete[]`.
  */
-
 
     // Cargar la imagen BMP desde el archivo especificado (usando Qt)
     QImage imagen(input);
