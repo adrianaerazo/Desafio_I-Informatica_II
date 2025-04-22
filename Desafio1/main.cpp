@@ -38,17 +38,9 @@
 typedef unsigned char* (*Function)(unsigned char*, unsigned char*, size_t, uint8_t); //Cambiar a arreglo dinamico
 
 int main(){
-    //Cantidad de transformaciones aplicada a Io
-    int N =0, c = 0;
-    cout << "Ingrese la cantidad de transformaciones realizadas a la imagen original (Io): " << endl;
-    cin >> c ;
-    //Verificar que el valor de n transformaciones sea mayor que cero
-    if (c == 0){
-        cout << "Error: La cantidad de transformaciones debe ser mayor que 0." << endl;
-        return -1;
-    }
-    N = c - 1;
 
+    int c = 0, N = 0;
+    validation(N, c);
 
     // Variables para almacenar las dimensiones de la imagen
     int height = 0, width = 0, originalHeight = 0, originalWidth = 0;
@@ -106,28 +98,19 @@ int main(){
         // Probar RL y RR solo si las anteriores fallaron
         for (uint8_t bits = 1; bits <= 8 && !found; bits++) {
 
-            unsigned char *transformationRL = functions[3](pixelData, nullptr, dataSize, bits);
+            for (uint8_t j = 3; j <= 4 && !found; j++) {
 
-            if (verificationTransformation(maskingData, pixelMascara, transformationRL, seed, n_pixels)) {
-                string mensaje = "Paso " + to_string(i + 1) + ": " + nameTransformations[3] + " es la transformacion correcta con " + to_string(bits) + " bits.";
-                trAplicadas[i] = mensaje;
-                delete[] pixelData;
-                pixelData = transformationRL;
-                found = true;
-            } else {
-                delete[] transformationRL;
-            }
+                unsigned char *transformation = functions[j](pixelData, nullptr, dataSize, bits);
 
-            unsigned char *transformationRR = functions[4](pixelData, nullptr, dataSize, bits);
-
-            if (verificationTransformation(maskingData, pixelMascara, transformationRR, seed, n_pixels)) {
-                string mensaje = "Paso " + to_string(i + 1) + ": " + nameTransformations[4] + " es la transformacion correcta con " + to_string(bits) + " bits.";
-                trAplicadas[i] = mensaje;
-                delete[] pixelData;
-                pixelData = transformationRR;
-                found = true;
-            } else {
-                delete[] transformationRR;
+                if (verificationTransformation(maskingData, pixelMascara, transformation, seed, n_pixels)) {
+                    string mensaje = "Paso " + to_string(i + 1) + ": " + nameTransformations[j] + " es la transformacion correcta con " + to_string(bits) + " bits.";
+                    trAplicadas[i] = mensaje;
+                    delete[] pixelData;
+                    pixelData = transformation;
+                    found = true;
+                } else {
+                    delete[] transformation;
+                }
             }
         }
 
@@ -151,131 +134,6 @@ int main(){
 
     return 0;
 }
-
-
-/*
-    //Implementacion de posible solucion lineal
-    for (int8_t i = 0; i <= N; i++)
-    {
-        bool encontrada = false;
-
-        // Intentar primero XOR
-        unsigned char* pixelImMascara = loadPixels("I_M.bmp", originalWidth, originalHeight);
-        unsigned char* resultadoXOR = funcionXOR(pixelData, pixelImMascara, dataSize);
-        unsigned char* resultadoOR = funcionOR(pixelData, pixelImMascara, dataSize);
-        unsigned char* resultadoAND = funcionAND(pixelData, pixelImMascara, dataSize);
-
-        QString archivoTxt = "M" + QString::number(N - i) + ".txt";
-        int seed = 0, n_pixels = 0;
-        unsigned int* maskingData = loadSeedMasking(archivoTxt.toStdString().c_str(), seed, n_pixels);
-        unsigned char* pixelMascara = loadPixels("M.bmp", width, height);
-
-        if (verificationTransformation(maskingData, pixelMascara, resultadoXOR, seed, n_pixels))
-        {
-            string mensaje = "Paso " + to_string(i + 1) + ": XOR es la transformacion correcta.";
-            cout << mensaje << endl;
-            trAplicadas[i] = mensaje;
-            delete[] pixelData;
-            pixelData = resultadoXOR;
-            encontrada = true;
-        }
-        else
-        {
-            delete[] resultadoXOR;
-        }
-
-        if(verificationTransformation(maskingData, pixelMascara, resultadoOR, seed, n_pixels))
-        {
-            string mensaje = "Paso " + to_string(i + 1) + ": OR es la transformacion correcta.";
-            cout << mensaje << endl;
-            trAplicadas[i] = mensaje;
-            delete[] pixelData;
-            pixelData = resultadoOR;
-            encontrada = true;
-        }
-        else
-        {
-            delete[] resultadoOR;
-        }
-
-        if(verificationTransformation(maskingData, pixelMascara, resultadoAND, seed, n_pixels))
-        {
-            string mensaje = "Paso " + to_string(i + 1) + ": AND es la transformacion correcta.";
-            cout << mensaje << endl;
-            trAplicadas[i] = mensaje;
-            delete[] pixelData;
-            pixelData = resultadoAND;
-            encontrada = true;
-        }
-        else
-        {
-            delete[] resultadoAND;
-        }
-
-        delete[] pixelImMascara;
-        delete[] pixelMascara;
-        delete[] maskingData;
-
-        // Si no fue ninguna de las anteriores, probar rotaciones DERECHA e IZQUIERDA
-        for (int n = 1; n <= 8 && !encontrada; n++)
-        {
-            // Si tampoco fue rotacion derecha, probar rotaciones DERECHA
-            unsigned char* resultadoRR = funcionRR(pixelData, dataSize, n);
-            QString archivoTxt = "M" + QString::number(N - i) + ".txt";
-            int seed = 0, n_pixels = 0;
-            unsigned int* maskingData = loadSeedMasking(archivoTxt.toStdString().c_str(), seed, n_pixels);
-            unsigned char* pixelMascara = loadPixels("M.bmp", width, height);
-
-            if (verificationTransformation(maskingData, pixelMascara, resultadoRR, seed, n_pixels))
-            {
-                string mensaje = "Paso " + to_string(i + 1) + ": Rotacion DERECHA de " + to_string(n) + " bits es la transformacion correcta.";
-                cout << mensaje << endl;
-                trAplicadas[i] = mensaje;
-                delete[] pixelData;
-                pixelData = resultadoRR;
-                encontrada = true;
-            }
-            else delete[] resultadoRR;
-
-
-            // Si tampoco fue rotacion derecha, probar rotaciones IZQUIERDA
-            unsigned char* resultadoRL = funcionRL(pixelData, dataSize, n);
-
-            if (verificationTransformation(maskingData, pixelMascara, resultadoRL, seed, n_pixels))
-            {
-                string mensaje = "Paso " + to_string(i + 1) + ": Rotacion IZQUIERDA de " + to_string(n) + " bits es la transformacion correcta.";
-                cout << mensaje << endl;
-                trAplicadas[i] = mensaje;
-                pixelData = resultadoRL;
-                encontrada = true;
-            }
-            else delete[] resultadoRL;
-
-            delete[] pixelMascara;
-            delete[] maskingData;
-        }
-
-        if (!encontrada)
-        {
-            string mensaje = "No se encontro una transformacion valida para el paso " + to_string(i + 1);
-            cout << mensaje << endl;
-            trAplicadas[i] = mensaje;
-            break;
-        }
-    }
-
-
-    // Al final mostramos todas las transformaciones aplicadas
-    cout << "\nRESUMEN DE LAS TRANSFORMACIONES REALIZADAS:\n";
-    for (int8_t i = 0; i <= N; i++)
-    {
-        cout << trAplicadas[i] << endl;
-    }
-
-    return 0; // Fin del programa
-}
-
-*/
 
 
 

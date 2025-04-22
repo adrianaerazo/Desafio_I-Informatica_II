@@ -9,6 +9,7 @@ SOURCES += main.cpp \
     funcionXOR.cpp \
     loadPixels.cpp \
     loadSeedMasking.cpp \
+    validationN.cpp \
     verificationTransformation.cpp
 
 DISTFILES += \

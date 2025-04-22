@@ -7,6 +7,7 @@ using namespace std;
 
 #ifndef HEADER_H
 #define HEADER_H
+void validation(int &Ntr, int &c);
 unsigned char* loadPixels(QString input, int &width, int &height);
 bool exportImage(unsigned char* pixelData, int width,int height, QString archivoSalida);
 unsigned char *funcionXOR(unsigned char* pixelData, unsigned char* pixelImMascara, size_t dataSize, uint8_t n);
