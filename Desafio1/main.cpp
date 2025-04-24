@@ -2,36 +2,36 @@
 #include <Header.h>
 
 /*
- * Programa demostrativo de manipulaciónprocesamiento de imágenes BMP en C++ usando Qt.
+ * @brief Programa para realizar transformaciones sobre una imagen distorsionada utilizando técnicas de enmascarado y transformaciones bit a bit.
  *
- * Descripción:
- * Este programa realiza las siguientes tareas:
- * 1. Carga una imagen BMP desde un archivo (formato RGB sin usar estructuras ni STL).
- * 2. Modifica los valores RGB de los píxeles asignando un degradado artificial basado en su posición.
- * 3. Exporta la imagen modificada a un nuevo archivo BMP.
- * 4. Carga un archivo de texto que contiene una semilla (offset) y los resultados del enmascaramiento
- *    aplicados a una versión transformada de la imagen, en forma de tripletas RGB.
- * 5. Muestra en consola los valores cargados desde el archivo de enmascaramiento.
- * 6. Gestiona la memoria dinámicamente, liberando los recursos utilizados.
+ * Este programa carga una imagen BMP distorsionada, realiza una serie de transformaciones en ella (XOR, RL, RR), y verifica si la transformación es correcta utilizando una máscara de referencia. Si una transformación es válida, se actualiza la imagen con el resultado. Las transformaciones realizadas se almacenan y se muestran al final del proceso.
  *
- * Entradas:
- * - Archivo de imagen BMP de entrada ("I_O.bmp").
- * - Archivo de salida para guardar la imagen modificada ("I_D.bmp").
- * - Archivo de texto ("M1.txt") que contiene:
- *     • Una línea con la semilla inicial (offset).
- *     • Varias líneas con tripletas RGB resultantes del enmascaramiento.
+ * El proceso sigue los siguientes pasos:
+ * 1. Cargar la imagen BMP distorsionada y sus dimensiones.
+ * 2. Definir un conjunto de funciones de transformación.
+ * 3. Iterar sobre un conjunto de pasos de transformación, donde se prueban las funciones XOR, RL, y RR, verificando si la transformación resulta válida con respecto a una máscara de referencia.
+ * 4. En cada iteración, si una transformación es válida, se reemplaza la imagen con el resultado de la transformación correcta.
+ * 5. Finalmente, se exporta la imagen transformada y se imprime un resumen de las transformaciones realizadas.
  *
- * Salidas:
- * - Imagen BMP modificada ("I_D.bmp").
- * - Datos RGB leídos desde el archivo de enmascaramiento impresos por consola.
+ * @param N Número total de pasos de transformación.
+ * @param c Número de transformaciones aplicadas.
+ * @param archivoEntrada Ruta del archivo BMP de entrada (imagen distorsionada).
+ * @param archivoImMascara Ruta del archivo BMP de la máscara de imagen.
+ * @param Mascara Ruta del archivo BMP de la máscara a usar en cada paso de transformación.
+ * @param textFile Ruta del archivo de texto con los datos de enmascarado (usado para verificar la transformación).
+ * @param archivoSalida Ruta del archivo BMP de salida para exportar la imagen transformada.
  *
- * Requiere:
- * - Librerías Qt para manejo de imágenes (QImage, QString).
- * - No utiliza estructuras ni STL. Solo arreglos dinámicos y memoria básica de C++.
+ * @return int Código de salida del programa.
  *
- * Autores: Augusto Salazar Y Aníbal Guerra
- * Fecha: 06/04/2025
- * Asistencia de ChatGPT para mejorar la forma y presentación del código fuente
+ * Detalles de las funciones:
+ * - La función 'loadPixels' se encarga de cargar los datos de píxeles de la imagen desde el archivo BMP.
+ * - Las funciones 'funcionXOR', 'funcionRL' y 'funcionRR' son las funciones de transformación que se aplican a la imagen.
+ * - La función 'verificationTransformation' verifica si la transformación aplicada es correcta usando la máscara de referencia.
+ * - La función 'exportImage' exporta la imagen transformada a un archivo BMP.
+ *
+ * Notas:
+ * - Se usa memoria dinámica para almacenar y manipular los datos de los píxeles de las imágenes.
+ * - Se utiliza una estructura de punteros a funciones para realizar las transformaciones de manera modular.
  */
 
 //se define antes de usar porque en C++ el compilador necesita conocer todos los tipos antes de compilar las funciones
@@ -55,14 +55,14 @@ int main(){
     size_t dataSize = originalWidth * originalHeight * 3;
 
     //Arreglo de puntero a funciones
-    Function functions[] = {funcionXOR, funcionOR, funcionAND, funcionRL, funcionRR};
+    Function functions[] = {funcionXOR, funcionRL, funcionRR};
 
     //Imprimir en pantalla las transformaciones realizadas
     string* trAplicadas = new string[c];
 
 
     //Arreglo de nombres de funciones para imprimir en pantalla las transformaciones realizadas
-    string nameTransformations[5] = {"XOR" , "OR" , "AND" , "RL" , "RR"};
+    string nameTransformations[5] = {"XOR" , "RL" , "RR"};
 
     //Posible solucion mas eficiente
     for (int i = 0; i <= N; i++) {
@@ -79,26 +79,23 @@ int main(){
         int seed = 0, n_pixels = 0;
         unsigned int *maskingData = loadSeedMasking(textFile.toStdString().c_str(), seed, n_pixels);
 
-        // Probar XOR, OR, AND
-        for (uint8_t j = 0; j < 3 && !found; j++) {
+        // Probar XOR
+        unsigned char *transformation = functions[0](pixelData, pixelImMascara, dataSize, 0);
 
-            unsigned char *transformation = functions[j](pixelData, pixelImMascara, dataSize, 0);
-
-            if (verificationTransformation(maskingData, pixelMascara, transformation, seed, n_pixels)) {
-                string mensaje = "Paso " + to_string(i + 1) + ": " + nameTransformations[j] + " es la transformacion correcta.";
-                trAplicadas[i] = mensaje;
-                delete[] pixelData;
-                pixelData = transformation;
-                found = true;
-            } else {
-                delete[] transformation;
-            }
+        if (verificationTransformation(maskingData, pixelMascara, transformation, seed, n_pixels)) {
+            string mensaje = "Paso " + to_string(i + 1) + ": " + nameTransformations[0] + " es la transformacion correcta.";
+            trAplicadas[i] = mensaje;
+            delete[] pixelData;
+            pixelData = transformation;
+            found = true;
+        } else {
+            delete[] transformation;
         }
 
         // Probar RL y RR solo si las anteriores fallaron
         for (uint8_t bits = 1; bits <= 8 && !found; bits++) {
 
-            for (uint8_t j = 3; j <= 4 && !found; j++) {
+            for (uint8_t j = 1; j <= 2 && !found; j++) {
 
                 unsigned char *transformation = functions[j](pixelData, nullptr, dataSize, bits);
 
