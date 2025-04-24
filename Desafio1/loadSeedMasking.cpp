@@ -5,7 +5,7 @@
 
 using namespace std;
 
-unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixels)
+uint16_t* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixels)
 {/*
  * @brief Carga la semilla y los resultados del enmascaramiento desde un archivo de texto.
  *
@@ -60,7 +60,7 @@ unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixel
 
     // Reservar memoria dinámica para guardar todos los valores RGB
     // Cada píxel tiene 3 componentes: R, G y B
-    unsigned int* RGB = new unsigned int[n_pixels * 3];
+    uint16_t* RGB = new uint16_t[n_pixels * 3];
 
     // Leer nuevamente la semilla desde el archivo (se descarta su valor porque ya se cargó antes)
     archivo >> seed;

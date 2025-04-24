@@ -2,7 +2,7 @@
 
 using namespace std;
 
-bool verificationTransformation(unsigned int* dataRGB , unsigned char* mascara, unsigned char* transformation, int &seed, int &n_pixels)
+bool verificationTransformation(uint16_t* dataRGB , unsigned char* mascara, unsigned char* transformation, int &seed, int &n_pixels)
 {/*
  * @brief Verifica si la transformación aplicada sobre una imagen distorsionada es correcta mediante un enmascaramiento.
  *

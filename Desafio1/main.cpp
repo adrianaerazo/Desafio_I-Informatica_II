@@ -77,7 +77,7 @@ int main(){
 
         QString textFile = "M" + QString::number(N - i) + ".txt";
         int seed = 0, n_pixels = 0;
-        unsigned int *maskingData = loadSeedMasking(textFile.toStdString().c_str(), seed, n_pixels);
+        uint16_t *maskingData = loadSeedMasking(textFile.toStdString().c_str(), seed, n_pixels);
 
         // Probar XOR
         unsigned char *transformation = functions[0](pixelData, pixelImMascara, dataSize, 0);
