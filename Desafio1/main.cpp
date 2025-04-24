@@ -40,7 +40,11 @@ typedef unsigned char* (*Function)(unsigned char*, unsigned char*, size_t, uint8
 int main(){
 
     int c = 0, N = 0;
-    validation(N, c);
+    c = countTxt();
+    N= c-1;
+
+    //Imprimir mensaje en pantalla de la cantidad de transformaciones
+    cout << "Para este caso se realizaron " << c << " transformaciones. " << endl;
 
     // Variables para almacenar las dimensiones de la imagen
     int height = 0, width = 0, originalHeight = 0, originalWidth = 0;

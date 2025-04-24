@@ -1,13 +1,13 @@
 QT += core gui
 CONFIG += console c++17
 SOURCES += main.cpp \
+    countTxt.cpp \
     exportImage.cpp \
     funcionRL.cpp \
     funcionRR.cpp \
     funcionXOR.cpp \
     loadPixels.cpp \
     loadSeedMasking.cpp \
-    validationN.cpp \
     verificationTransformation.cpp
 
 DISTFILES += \
