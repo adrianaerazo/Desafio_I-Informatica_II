@@ -41,10 +41,10 @@ int main(){
 
     int c = 0, N = 0;
     c = countTxt();
-    N= c-1;
+    N = c-1;
 
     //Imprimir mensaje en pantalla de la cantidad de transformaciones
-    cout << "Para este caso se realizaron " << c << " transformaciones. " << endl;
+    cout << "Para este caso se realizaron " << c << " transformaciones.\n" << endl;
 
     // Variables para almacenar las dimensiones de la imagen
     int height = 0, width = 0, originalHeight = 0, originalWidth = 0;
@@ -111,6 +111,7 @@ int main(){
                     found = true;
                 } else {
                     delete[] transformation;
+                    transformation = nullptr;
                 }
             }
         }
@@ -136,6 +137,7 @@ int main(){
         cout << trAplicadas[i] << endl;
     }
     delete[] trAplicadas;
+    trAplicadas = nullptr;
 
     return 0;
 }
