@@ -117,14 +117,18 @@ int main(){
 
         // Liberar memoria cargada para cada paso i
         delete[] pixelImMascara;
+        pixelImMascara = nullptr;
         delete[] pixelMascara;
+        pixelMascara = nullptr;
         delete[] maskingData;
+        maskingData = nullptr;
     }
 
 
     QString archivoSalida = "I_O.bmp";
     exportImage(pixelData, originalWidth, originalHeight, archivoSalida);
     delete[] pixelData;
+    pixelData = nullptr;
 
     // Al final mostramos todas las transformaciones aplicadas
     cout << "\nRESUMEN DE LAS TRANSFORMACIONES REALIZADAS:\n";
