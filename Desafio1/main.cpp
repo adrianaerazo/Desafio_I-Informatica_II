@@ -94,6 +94,7 @@ int main(){
             found = true;
         } else {
             delete[] transformation;
+            transformation = nullptr;
         }
 
         // Probar RL y RR solo si las anteriores fallaron
