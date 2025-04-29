@@ -66,7 +66,7 @@ int main(){
 
 
     //Arreglo de nombres de funciones para imprimir en pantalla las transformaciones realizadas
-    string nameTransformations[5] = {"XOR" , "RL" , "RR"};
+    string nameTransformations[3] = {"XOR" , "RL" , "RR"};
 
     //Posible solucion mas eficiente
     for (int i = 0; i <= N; i++) {
@@ -94,6 +94,7 @@ int main(){
             found = true;
         } else {
             delete[] transformation;
+            transformation = nullptr;
         }
 
         // Probar RL y RR solo si las anteriores fallaron
